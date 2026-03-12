@@ -122,12 +122,26 @@ export default function BuildTeamPage() {
           <h5 className="fw-bold mb-3">Search Players</h5>
           <Row className="g-2 mb-3">
             <Col xs={12} sm={5}>
-              <Form.Control
-                type="search"
-                placeholder="Player name…"
-                value={query}
-                onChange={e => setQuery(e.target.value)}
-              />
+              <div className="position-relative">
+                <Form.Control
+                  type="search"
+                  placeholder="Player name…"
+                  value={query}
+                  onChange={e => setQuery(e.target.value)}
+                  style={{ paddingRight: query ? '2.2rem' : undefined }}
+                />
+                {query && (
+                  <button
+                    onClick={() => setQuery('')}
+                    aria-label="Clear search"
+                    style={{
+                      position: 'absolute', right: '0.5rem', top: '50%',
+                      transform: 'translateY(-50%)', background: 'none',
+                      border: 'none', cursor: 'pointer', color: '#6c757d', fontSize: '1rem', lineHeight: 1, padding: 0
+                    }}
+                  >✕</button>
+                )}
+              </div>
             </Col>
             <Col xs={6} sm={3}>
               <Form.Select value={filterPosition} onChange={e => setFilterPosition(e.target.value)}>
