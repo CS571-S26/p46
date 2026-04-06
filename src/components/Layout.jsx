@@ -36,6 +36,7 @@ export default function Layout() {
             <Nav.Link as={NavLink} to="/" end>Format Roster</Nav.Link>
             <Nav.Link as={NavLink} to="/build">Build Team</Nav.Link>
             <Nav.Link as={NavLink} to="/analyze">Analyze</Nav.Link>
+            <Nav.Link as={NavLink} to="/boom-bust">Boom/Bust</Nav.Link>
           </Nav>
           <div className="d-flex align-items-center gap-2">
             {dataStatus === 'loading' && (

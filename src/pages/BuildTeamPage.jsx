@@ -4,6 +4,7 @@ import { Container, Row, Col, Form, Card, Badge, Button, ListGroup, Spinner } fr
 import { loadAllData, getPlayerIndex } from '../services/nflApi.js'
 import useSessionState from '../hooks/useSessionState.js'
 import PlayerCard from '../components/PlayerCard.jsx'
+import AppPagination from '../components/AppPagination.jsx'
 
 const FLEX_ELIGIBLE = new Set(['RB', 'WR', 'TE'])
 const POSITION_ORDER = ['QB', 'RB', 'WR', 'TE', 'FLEX', 'K']
@@ -28,10 +29,13 @@ function fuzzyScore(name, query) {
   return score
 }
 
+const PAGE_SIZE = 10
+
 export default function BuildTeamPage() {
   const [query, setQuery] = useState('')
   const [filterPosition, setFilterPosition] = useState('ALL')
   const [filterTeam, setFilterTeam] = useState('ALL')
+  const [page, setPage] = useState(1)
   const [dataReady, setDataReady] = useState(() => getPlayerIndex() !== null)
   const navigate = useNavigate()
   const [roster] = useSessionState('rosterFormat', DEFAULT_ROSTER)
@@ -58,26 +62,33 @@ export default function BuildTeamPage() {
   )
 
   const searchResults = useMemo(() => {
-    const hasQuery = query.trim().length >= 2
-    const hasFilter = filterPosition !== 'ALL' || filterTeam !== 'ALL'
-    if (!hasQuery && !hasFilter) return []
-
     let results = playerList
     if (filterPosition !== 'ALL') results = results.filter(p => p.position === filterPosition)
     if (filterTeam !== 'ALL') results = results.filter(p => p.team === filterTeam)
 
+    const hasQuery = query.trim().length >= 2
     if (hasQuery) {
       results = results
         .map(p => ({ player: p, score: fuzzyScore(p.name, query) }))
         .filter(r => r.score > 0)
         .sort((a, b) => b.score - a.score)
-        .slice(0, 15)
         .map(r => r.player)
     } else {
-      results = results.slice(0, 15)
+      // Default order: most points above projection first
+      results = [...results].sort((a, b) => {
+        const diffA = (a.actual?.fantasyPoints ?? 0) - (a.projected?.fantasyPoints ?? 0)
+        const diffB = (b.actual?.fantasyPoints ?? 0) - (b.projected?.fantasyPoints ?? 0)
+        return diffB - diffA
+      })
     }
     return results
   }, [query, filterPosition, filterTeam, playerList])
+
+  // Reset to page 1 whenever search params change
+  useEffect(() => { setPage(1) }, [query, filterPosition, filterTeam])
+
+  const totalPages = Math.max(1, Math.ceil(searchResults.length / PAGE_SIZE))
+  const pageResults = searchResults.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE)
 
   function getSlotForPlayer(player) {
     const { position } = player
@@ -160,11 +171,11 @@ export default function BuildTeamPage() {
               </Form.Select>
             </Col>
           </Row>
-          {searchResults.length === 0 && (query.trim().length >= 2 || filterPosition !== 'ALL' || filterTeam !== 'ALL') && (
+          {searchResults.length === 0 && (
             <p className="text-muted">No players found.</p>
           )}
           <div className="d-flex flex-column gap-2">
-            {searchResults.map(player => {
+            {pageResults.map(player => {
               const alreadyAdded = allDraftedIDs.has(player.playerID)
               const slotAvailable = getSlotForPlayer(player) !== null
               return (
@@ -178,6 +189,7 @@ export default function BuildTeamPage() {
               )
             })}
           </div>
+          <AppPagination page={page} totalPages={totalPages} onPageChange={setPage} />
         </Col>
 
         {/* ── My Team Panel ── */}
