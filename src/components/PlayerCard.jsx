@@ -1,4 +1,6 @@
+import { useState } from 'react'
 import { Card, Badge, Button } from 'react-bootstrap'
+import PlayerStatsModal from './PlayerStatsModal.jsx'
 
 const POSITION_COLORS = {
   QB: 'danger',
@@ -10,22 +12,29 @@ const POSITION_COLORS = {
 }
 
 export default function PlayerCard({ player, actionLabel, actionDisabled, onAction }) {
+  const [showModal, setShowModal] = useState(false)
   const { name, team, number, position } = player
   return (
-    <Card className="shadow-sm">
-      <Card.Body className="py-2 px-3 d-flex justify-content-between align-items-center">
-        <div>
-          <Badge bg={POSITION_COLORS[position] ?? 'secondary'} className="me-2">{position}</Badge>
-          <span className="fw-semibold">{name}</span>
-          <span className="text-muted ms-2" style={{ fontSize: '0.85rem' }}>{team} · #{number}</span>
-        </div>
-        <Button
-          variant={actionDisabled ? 'outline-secondary' : 'outline-success'}
-          size="sm"
-          disabled={actionDisabled}
-          onClick={onAction}
-        >{actionLabel}</Button>
-      </Card.Body>
-    </Card>
+    <>
+      <Card
+        className="shadow-sm clickable-card"
+        onClick={() => setShowModal(true)}
+      >
+        <Card.Body className="py-2 px-3 d-flex justify-content-between align-items-center">
+          <div>
+            <Badge bg={POSITION_COLORS[position] ?? 'secondary'} className="me-2">{position}</Badge>
+            <span className="fw-semibold">{name}</span>
+            <span className="text-muted ms-2" style={{ fontSize: '0.85rem' }}>{team} · #{number}</span>
+          </div>
+          <Button
+            variant={actionDisabled ? 'outline-secondary' : 'outline-success'}
+            size="sm"
+            disabled={actionDisabled}
+            onClick={e => { e.stopPropagation(); onAction() }}
+          >{actionLabel}</Button>
+        </Card.Body>
+      </Card>
+      <PlayerStatsModal player={player} show={showModal} onHide={() => setShowModal(false)} />
+    </>
   )
 }
