@@ -61,6 +61,10 @@ function PlayerSlot({ player, onRemove }) {
       <div
         className="d-flex align-items-center justify-content-between rounded border px-2 py-1 bg-white shadow-sm clickable-card"
         onClick={() => setShowModal(true)}
+        role="button"
+        tabIndex={0}
+        aria-label={`${player.name}, ${player.position}, ${player.team} — view stats`}
+        onKeyDown={e => (e.key === 'Enter' || e.key === ' ') && setShowModal(true)}
       >
         <div className="d-flex align-items-center gap-2">
           <Badge bg={POSITION_COLORS[player.position] ?? 'secondary'}>{player.position}</Badge>
@@ -71,6 +75,7 @@ function PlayerSlot({ player, onRemove }) {
           variant="outline-danger"
           size="sm"
           style={{ padding: '0 0.4rem', lineHeight: '1.4' }}
+          aria-label={`Remove ${player.name}`}
           onClick={e => { e.stopPropagation(); onRemove() }}
         >✕</Button>
       </div>
@@ -106,6 +111,7 @@ function PlayerSearch({ onSelect, excludeIDs, label }) {
         size="sm"
         type="search"
         placeholder={`Search to add to ${label}…`}
+        aria-label={`Search players for ${label}`}
         value={query}
         onChange={e => { setQuery(e.target.value); setOpen(true) }}
         onBlur={() => setTimeout(() => setOpen(false), 150)}
@@ -122,7 +128,7 @@ function PlayerSearch({ onSelect, excludeIDs, label }) {
               action
               className="py-1 px-2"
               style={{ fontSize: '0.85rem', cursor: 'pointer' }}
-              onMouseDown={() => handleSelect(p)}
+              onClick={() => handleSelect(p)}
             >
               <Badge bg={POSITION_COLORS[p.position] ?? 'secondary'} className="me-2">{p.position}</Badge>
               <span className="fw-semibold">{p.name}</span>
@@ -216,7 +222,7 @@ export default function TradePage() {
 
   return (
     <Container className="py-4">
-      <h5 className="fw-bold mb-1">Trade Analyzer</h5>
+      <h1 className="h5 fw-bold mb-1">Trade Analyzer</h1>
       <p className="text-muted mb-4" style={{ fontSize: '0.9rem' }}>
         Add up to {MAX_SLOTS} players per side to evaluate a trade by projected value and hindsight performance.
       </p>

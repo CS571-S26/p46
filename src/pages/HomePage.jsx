@@ -34,7 +34,7 @@ export default function HomePage() {
         <Col xs={12} md={6} lg={5}>
           <Card className="shadow-sm">
             <Card.Header className="bg-success text-white text-center py-3">
-              <h4 className="mb-0">Build Your Roster Format</h4>
+              <h2 className="h4 mb-0">Build Your Roster Format</h2>
               <small className="opacity-75">Choose how many of each position to include</small>
             </Card.Header>
             <Card.Body className="p-0">

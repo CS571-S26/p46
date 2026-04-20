@@ -10,6 +10,15 @@ const POSITION_COLORS = {
 
 const PAGE_SIZE = 10
 
+function getAccessibleTextColor(r, g, b) {
+  const toLinear = c => {
+    const s = c / 255
+    return s <= 0.04045 ? s / 12.92 : Math.pow((s + 0.055) / 1.055, 2.4)
+  }
+  const L = 0.2126 * toLinear(r) + 0.7152 * toLinear(g) + 0.0722 * toLinear(b)
+  return L > 0.179 ? '#212529' : '#fff'
+}
+
 function interpolateColor(index, total, type) {
   const t = total <= 1 ? 0 : index / (total - 1)
   let r, g, b
@@ -26,7 +35,7 @@ function interpolateColor(index, total, type) {
   }
   return {
     backgroundColor: `rgb(${r}, ${g}, ${b})`,
-    color: t < 0.45 ? '#fff' : '#212529',
+    color: getAccessibleTextColor(r, g, b),
   }
 }
 
@@ -41,7 +50,11 @@ function BoomBustCard({ player, indexInFull, total, type, rank, scoringKey }) {
 
   return (
     <>
-      <Card className="shadow-sm mb-3 clickable-card" onClick={() => setShowModal(true)}>
+      <Card className="shadow-sm mb-3 clickable-card" onClick={() => setShowModal(true)}
+        role="button" tabIndex={0}
+        aria-label={`${player.name}, ${player.position}, ${player.team}, ${diffStr} pts`}
+        onKeyDown={e => (e.key === 'Enter' || e.key === ' ') && setShowModal(true)}
+      >
         <Card.Header style={headerStyle} className="py-2 px-3 d-flex justify-content-between align-items-center">
           <div className="d-flex align-items-center gap-2">
             <span className="fw-bold me-1" style={{ fontSize: '1rem', opacity: 0.8 }}>#{rank}</span>
@@ -78,7 +91,7 @@ function FilterBar({ position, team, allTeams, minGames, maxGames, onPositionCha
   return (
     <Row className="g-2 mb-3 align-items-center">
       <Col xs={6} sm={4} md={3}>
-        <Form.Select size="sm" value={position} onChange={e => onPositionChange(e.target.value)}>
+        <Form.Select size="sm" value={position} aria-label="Filter by position" onChange={e => onPositionChange(e.target.value)}>
           <option value="">All Positions</option>
           {['QB', 'RB', 'WR', 'TE', 'K'].map(p => (
             <option key={p} value={p}>{p}</option>
@@ -86,7 +99,7 @@ function FilterBar({ position, team, allTeams, minGames, maxGames, onPositionCha
         </Form.Select>
       </Col>
       <Col xs={6} sm={4} md={3}>
-        <Form.Select size="sm" value={team} onChange={e => onTeamChange(e.target.value)}>
+        <Form.Select size="sm" value={team} aria-label="Filter by team" onChange={e => onTeamChange(e.target.value)}>
           <option value="">All Teams</option>
           {allTeams.map(t => (
             <option key={t} value={t}>{t}</option>
@@ -100,6 +113,7 @@ function FilterBar({ position, team, allTeams, minGames, maxGames, onPositionCha
             min={1}
             max={maxGames}
             value={minGames}
+            aria-label={`Minimum games played: ${minGames}`}
             onChange={e => onMinGamesChange(Number(e.target.value))}
             style={{ flex: 1 }}
           />
@@ -232,14 +246,16 @@ export default function BoomBustPage() {
   return (
     <Container className="py-4">
       <div className="d-flex justify-content-between align-items-center mb-4">
-        <h5 className="fw-bold mb-0">Boom / Bust — 2025 NFL Season</h5>
-        <ButtonGroup size="sm">
+        <h1 className="h5 fw-bold mb-0">Boom / Bust — 2025 NFL Season</h1>
+        <ButtonGroup size="sm" role="group" aria-label="Scoring mode">
           <Button
             variant={scoringMode === 'ppr' ? 'success' : 'outline-success'}
+            aria-pressed={scoringMode === 'ppr'}
             onClick={() => setScoringMode('ppr')}
           >PPR</Button>
           <Button
             variant={scoringMode === 'half' ? 'success' : 'outline-success'}
+            aria-pressed={scoringMode === 'half'}
             onClick={() => setScoringMode('half')}
           >½ PPR</Button>
         </ButtonGroup>

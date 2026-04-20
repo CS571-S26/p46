@@ -9,13 +9,15 @@ export default function SlotRow({ pos, count, onChange }) {
           <Button
             variant="outline-secondary"
             size="sm"
+            aria-label={`Decrease ${pos.label} slots`}
             onClick={() => onChange(pos.key, count - 1)}
             disabled={count <= pos.min}
           >−</Button>
-          <span className="fs-5 fw-bold" style={{ minWidth: '1.5rem', textAlign: 'center' }}>{count}</span>
+          <span className="fs-5 fw-bold" style={{ minWidth: '1.5rem', textAlign: 'center' }} aria-live="polite">{count}</span>
           <Button
             variant="outline-secondary"
             size="sm"
+            aria-label={`Increase ${pos.label} slots`}
             onClick={() => onChange(pos.key, count + 1)}
             disabled={count >= pos.max}
           >+</Button>

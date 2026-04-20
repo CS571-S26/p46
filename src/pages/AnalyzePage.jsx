@@ -170,14 +170,16 @@ export default function AnalyzePage() {
   return (
     <Container className="py-4">
       <div className="d-flex justify-content-between align-items-center mb-4">
-        <h5 className="fw-bold mb-0">Team Analysis</h5>
-        <ButtonGroup size="sm">
+        <h1 className="h5 fw-bold mb-0">Team Analysis</h1>
+        <ButtonGroup size="sm" role="group" aria-label="Scoring mode">
           <Button
             variant={scoringMode === 'ppr' ? 'success' : 'outline-success'}
+            aria-pressed={scoringMode === 'ppr'}
             onClick={() => setScoringMode('ppr')}
           >PPR</Button>
           <Button
             variant={scoringMode === 'half' ? 'success' : 'outline-success'}
+            aria-pressed={scoringMode === 'half'}
             onClick={() => setScoringMode('half')}
           >½ PPR</Button>
         </ButtonGroup>

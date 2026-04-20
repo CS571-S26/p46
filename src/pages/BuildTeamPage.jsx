@@ -130,13 +130,14 @@ export default function BuildTeamPage() {
 
         {/* ── Search Panel ── */}
         <Col xs={12} md={7}>
-          <h5 className="fw-bold mb-3">Search Players</h5>
+          <h1 className="h5 fw-bold mb-3">Search Players</h1>
           <Row className="g-2 mb-3">
             <Col xs={12} sm={5}>
               <div className="position-relative">
                 <Form.Control
                   type="search"
                   placeholder="Player name…"
+                  aria-label="Search players by name"
                   value={query}
                   onChange={e => setQuery(e.target.value)}
                   style={{ paddingRight: query ? '2.2rem' : undefined }}
@@ -155,7 +156,7 @@ export default function BuildTeamPage() {
               </div>
             </Col>
             <Col xs={6} sm={3}>
-              <Form.Select value={filterPosition} onChange={e => setFilterPosition(e.target.value)}>
+              <Form.Select value={filterPosition} aria-label="Filter by position" onChange={e => setFilterPosition(e.target.value)}>
                 <option value="ALL">All Positions</option>
                 {['QB','RB','WR','TE','K'].map(pos => (
                   <option key={pos} value={pos}>{pos}</option>
@@ -163,7 +164,7 @@ export default function BuildTeamPage() {
               </Form.Select>
             </Col>
             <Col xs={6} sm={4}>
-              <Form.Select value={filterTeam} onChange={e => setFilterTeam(e.target.value)}>
+              <Form.Select value={filterTeam} aria-label="Filter by team" onChange={e => setFilterTeam(e.target.value)}>
                 <option value="ALL">All Teams</option>
                 {teamOptions.map(t => (
                   <option key={t} value={t}>{t}</option>
@@ -194,7 +195,7 @@ export default function BuildTeamPage() {
 
         {/* ── My Team Panel ── */}
         <Col xs={12} md={5}>
-          <h5 className="fw-bold mb-3">My Team</h5>
+          <h2 className="h5 fw-bold mb-3">My Team</h2>
           {POSITION_ORDER.filter(pos => (roster[pos] ?? 0) > 0).map(pos => {
             const slots = roster[pos]
             const filled = draftedTeam[pos] ?? []
@@ -223,6 +224,7 @@ export default function BuildTeamPage() {
                         <Button
                           variant="outline-danger"
                           size="sm"
+                          aria-label={`Remove ${p.name}`}
                           onClick={() => handleRemove(pid, pos)}
                         >✕</Button>
                       </ListGroup.Item>

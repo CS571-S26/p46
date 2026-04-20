@@ -1,3 +1,19 @@
+/* WCAG AA: inactive nav links default to rgba(255,255,255,0.55) on #198754 (~2.3:1).
+   Pure white on #198754 = 4.5:1, which just clears the AA threshold.
+   Active link is distinguished with a bold underline instead of opacity reduction. */
+.navbar-dark {
+  --bs-navbar-color: rgba(255, 255, 255, 1);
+  --bs-navbar-hover-color: rgba(255, 255, 255, 1);
+  --bs-navbar-active-color: rgba(255, 255, 255, 1);
+  --bs-navbar-disabled-color: rgba(255, 255, 255, 0.75);
+}
+
+.navbar-dark .navbar-nav .nav-link.active {
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
 .clickable-card {
   cursor: pointer;
   transition: transform 0.15s ease, box-shadow 0.15s ease;

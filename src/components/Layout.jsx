@@ -44,7 +44,7 @@ export default function Layout() {
               <Spinner animation="border" variant="light" size="sm" title="Loading player data…" />
             )}
             {dataStatus === 'error' && (
-              <span className="text-warning fw-semibold" style={{ fontSize: '0.8rem' }}>⚠ Data unavailable</span>
+              <span className="text-white fw-semibold" style={{ fontSize: '0.8rem' }}>⚠ Data unavailable</span>
             )}
             <Button
               variant="outline-light"

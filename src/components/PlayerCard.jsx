@@ -19,6 +19,10 @@ export default function PlayerCard({ player, actionLabel, actionDisabled, onActi
       <Card
         className="shadow-sm clickable-card"
         onClick={() => setShowModal(true)}
+        role="button"
+        tabIndex={0}
+        aria-label={`${name}, ${position}, ${team} — view stats`}
+        onKeyDown={e => (e.key === 'Enter' || e.key === ' ') && setShowModal(true)}
       >
         <Card.Body className="py-2 px-3 d-flex justify-content-between align-items-center">
           <div>
