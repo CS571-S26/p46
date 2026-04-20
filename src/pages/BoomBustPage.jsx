@@ -10,15 +10,6 @@ const POSITION_COLORS = {
 
 const PAGE_SIZE = 10
 
-function getAccessibleTextColor(r, g, b) {
-  const toLinear = c => {
-    const s = c / 255
-    return s <= 0.04045 ? s / 12.92 : Math.pow((s + 0.055) / 1.055, 2.4)
-  }
-  const L = 0.2126 * toLinear(r) + 0.7152 * toLinear(g) + 0.0722 * toLinear(b)
-  return L > 0.179 ? '#212529' : '#fff'
-}
-
 function interpolateColor(index, total, type) {
   const t = total <= 1 ? 0 : index / (total - 1)
   let r, g, b
@@ -35,7 +26,7 @@ function interpolateColor(index, total, type) {
   }
   return {
     backgroundColor: `rgb(${r}, ${g}, ${b})`,
-    color: getAccessibleTextColor(r, g, b),
+    color: t < 0.45 ? '#fff' : '#212529',
   }
 }
 
